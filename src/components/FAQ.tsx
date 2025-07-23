@@ -56,16 +56,16 @@ const FAQ: React.FC = () => {
       <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
       <div className="space-y-4">
         {faqData.map((item, index) => (
-          <div key={index} className="border rounded-lg overflow-hidden">
+          <div key={index} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             <button
               onClick={() => toggleIndex(index)}
-              className="w-full text-left px-6 py-4 bg-gray-100 hover:bg-gray-200 focus:outline-none flex justify-between items-center"
+              className="w-full text-left px-6 py-4 bg-white hover:bg-gray-50 focus:outline-none flex justify-between items-center transition-colors"
               aria-expanded={openIndex === index}
               aria-controls={`faq-panel-${index}`}
               id={`faq-header-${index}`}
             >
-              <span className="font-medium">{item.question}</span>
-              <span className="text-xl">{openIndex === index ? '−' : '+'}</span>
+              <span className="font-medium text-gray-800">{item.question}</span>
+              <span className="text-xl text-gray-500">{openIndex === index ? '−' : '+'}</span>
             </button>
             <AnimatePresence initial={false}>
               {openIndex === index && (
@@ -82,9 +82,9 @@ const FAQ: React.FC = () => {
                     collapsed: { height: 0, opacity: 0 },
                   }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="px-6 py-4 bg-white text-gray-700"
+                  className="px-6 py-4 bg-white text-gray-700 border-t border-gray-100"
                 >
-                  {item.answer}
+                  <p className="text-gray-600">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>
