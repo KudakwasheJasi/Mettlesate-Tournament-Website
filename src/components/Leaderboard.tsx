@@ -11,7 +11,7 @@
     * - Modification    : Ensure loading UI overlay is clearly visible after app page loading
 **/
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useInView, useAnimation, AnimatePresence, Variants } from 'framer-motion';
+import { motion, useInView, useAnimation, AnimatePresence } from 'framer-motion';
 
 interface Player {
   id: number;
@@ -27,19 +27,14 @@ const Leaderboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef);
 
-  const item: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'spring' as const,
-        stiffness: 100,
-        damping: 10,
-        delay: i * 0.1,
-      },
-    }),
-  };
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start('show');
+    } else {
+      controls.stop();
+    }
+  }, [isInView, controls]);
 
   useEffect(() => {
     controls.start('show');
@@ -153,7 +148,7 @@ const Leaderboard: React.FC = () => {
                   <>
                     <Podium players={players} />
                     <motion.div
-                      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 overflow-hidden"
+                      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
@@ -171,9 +166,9 @@ const Leaderboard: React.FC = () => {
                               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Player
                               </th>
-                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Points
-                              </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                              Points
+                            </th>
                             </tr>
                           </thead>
                           <tbody
@@ -182,15 +177,15 @@ const Leaderboard: React.FC = () => {
                             {players.map((player, index) => (
                               <tr
                                 key={player.id}
-                                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                className="hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors duration-300"
                               >
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                   #{index + 1}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                   {player.username}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300 font-medium">
                                   <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                     {player.points} pts
                                   </span>
