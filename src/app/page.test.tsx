@@ -1,28 +1,45 @@
+/**
+    * @description      : 
+    * @author           : kudakwashe Ellijah
+    * @group            : 
+    * @created          : 23/07/2025 - 21:57:06
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 23/07/2025
+    * - Author          : kudakwashe Ellijah
+    * - Modification    : 
+**/
+import React from 'react';
 import { render, screen, waitFor, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
 import Home from './page';
+import { vi } from 'vitest';
 
 describe('Home Page', () => {
   it('renders loading state initially', async () => {
     render(<Home />);
-    const loader = screen.getByRole('progressbar');
+    // The loading spinner does not have role="progressbar", so query by class or test id
+    const loader = document.querySelector('.loader');
     expect(loader).toBeInTheDocument();
   });
 
   it('shows hero section after loading', async () => {
     render(<Home />);
+    // Wait for loading spinner to disappear
     await waitFor(() => {
-      const hero = screen.getByRole('heading', { name: /mettlesate tournament/i });
-      expect(hero).toBeInTheDocument();
-      const registerButton = screen.getByText(/register now/i);
-      expect(registerButton).toBeInTheDocument();
+      expect(document.querySelector('.loader')).not.toBeInTheDocument();
     });
+    const hero = screen.getByRole('heading', { name: /mettlesate tournament/i });
+    expect(hero).toBeInTheDocument();
+    const registerButton = screen.getByText(/register now/i);
+    expect(registerButton).toBeInTheDocument();
   });
 
   describe('Registration Form', () => {
-    const mockOnClose = jest.fn();
-    const mockOnSubmit = jest.fn();
+    const mockOnClose = vi.fn();
+    const mockOnSubmit = vi.fn();
 
     beforeEach(() => {
       mockOnClose.mockClear();

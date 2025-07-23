@@ -6,20 +6,9 @@
     * 
     * MODIFICATION LOG
     * - Version         : 1.0.0
-    * - Date            : 22/07/2025
+    * - Date            : 24/07/2025
     * - Author          : kudakwashe Ellijah
-    * - Modification    : 
-**/
-/**
- * @description      : Tests for Leaderboard component
- * @author           : kudakwashe Ellijah
- * @created          : 24/07/2025
- * 
- * MODIFICATION LOG
- * - Version         : 1.0.0
- * - Date            : 24/07/2025
- * - Author          : kudakwashe Ellijah
- * - Modification    : Created tests for Leaderboard component
+    * - Modification    : Created tests for Leaderboard component
  **/
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -30,15 +19,23 @@ describe('Leaderboard', () => {
   it('renders loading state initially and then player rows', async () => {
     render(<Leaderboard />);
 
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+    expect(screen.getByText(/loading leaderboard/i)).toBeInTheDocument();
 
-    // Wait for player rows to appear
+    // Wait for loading overlay to disappear
     await waitFor(() => {
-      expect(screen.getAllByRole('row').length).toBeGreaterThan(1); // header + players
+      const loadingOverlay = screen.queryByText(/loading leaderboard/i);
+      if (loadingOverlay) {
+        throw new Error('Loading overlay still present');
+      }
     });
 
-    // Check for presence of Rank and Gamer Tag headers
+    // Now check for player rows
+    const table = screen.getAllByRole('table')[0];
+    const rows = table.querySelectorAll('tr');
+    expect(rows.length).toBeGreaterThan(1); // header + players
+
+    // Check for presence of Rank and Player headers
     expect(screen.getByText(/Rank/i)).toBeInTheDocument();
-    expect(screen.getByText(/Gamer Tag/i)).toBeInTheDocument();
+    expect(screen.getByText(/Player/i)).toBeInTheDocument();
   });
 });

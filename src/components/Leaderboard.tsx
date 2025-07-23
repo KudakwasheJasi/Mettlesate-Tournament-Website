@@ -5,13 +5,13 @@
     * @created          : 22/07/2025 - 19:33:03
     * 
     * MODIFICATION LOG
-    * - Version         : 1.1.0
-    * - Date            : 24/07/2025
+    * - Version         : 1.3.0
+    * - Date            : 28/07/2025
     * - Author          : kudakwashe Ellijah
-    * - Modification    : Updated to fetch from API and map data accordingly
+    * - Modification    : Ensure loading UI overlay is clearly visible after app page loading
 **/
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, useInView, useAnimation, AnimatePresence, Variants } from 'framer-motion';
 
 interface Player {
   id: number;
@@ -22,114 +22,241 @@ interface Player {
 const Leaderboard: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  console.log('Leaderboard component rendering. Loading state:', loading, 'Players:', players.length);
+  const [error, setError] = useState<string | null>(null);
+  const controls = useAnimation();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef);
+
+  const item: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring' as const,
+        stiffness: 100,
+        damping: 10,
+        delay: i * 0.1,
+      },
+    }),
+  };
 
   useEffect(() => {
+    controls.start('show');
+  }, [controls]);
+
+  useEffect(() => {
+    if (isInView) {
+      console.log('Component is in view');
+    }
+  }, [isInView]);
+
+  useEffect(() => {
+    let isMounted = true;
+
     const fetchPlayers = async () => {
       console.log('Starting to fetch players...');
       setLoading(true);
-      
-      // Add artificial delay to see loading state
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      setError(null);
+
       try {
-        console.log('Making API call...');
+        // Artificial delay to make loading state visible longer
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         const response = await fetch('https://jsonplaceholder.typicode.com/users');
         if (!response.ok) throw new Error('Failed to fetch');
-        
+
         const data = await response.json();
         console.log('API response received:', data);
 
-        type User = {
-          id: number;
-          username: string;
-        };
+        if (!isMounted) return;
 
-        // Map API data to Player type with random points
-        const mappedPlayers: Player[] = data.slice(0, 10).map((user: User) => ({
-          id: user.id,
-          username: user.username,
-          points: Math.floor(Math.random() * 1000) + 500,
-        }));
-        
-        // Sort by points descending
+        const requiredPlayers = 10;
+        const availablePlayers = data.length;
+
+        const mappedPlayers: Player[] = Array(requiredPlayers).fill(null).map((_, index) => {
+          const user = data[index % availablePlayers];
+          const username = index >= availablePlayers
+            ? `${user.username}_${Math.floor(index / availablePlayers) + 1}`
+            : user.username;
+
+          return {
+            id: index + 1,
+            username,
+            points: Math.floor(Math.random() * 1000) + 500,
+          };
+        });
+
         const sortedPlayers = mappedPlayers.sort((a, b) => b.points - a.points);
-        console.log('Setting players data...');
+        console.log('Setting players data...', sortedPlayers);
         setPlayers(sortedPlayers);
       } catch (error) {
         console.error('Failed to fetch players:', error);
+        if (isMounted) setError((error as Error).message);
       } finally {
-        console.log('Setting loading to false');
-        setLoading(false);
+        if (isMounted) {
+          console.log('Setting loading to false');
+          setLoading(false);
+        }
       }
     };
-    
+
     fetchPlayers();
-    
-    // Cleanup function
+
     return () => {
-      console.log('Cleanup: Cancelling any pending operations');
+      isMounted = false;
     };
   }, []);
 
-  // Loading spinner component
-  const LoadingSpinner = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-xl text-center">
-        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
-        </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Loading Leaderboard</h3>
-        <p className="text-gray-600">Please wait while we fetch the latest rankings...</p>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    console.log('Loading state:', loading);
+    console.log('Players count:', players.length);
+  }, [loading, players]);
 
   return (
-    <section className="py-12 px-6 sm:px-12 md:px-24 relative">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-8">Leaderboard</h2>
-        {loading && <LoadingSpinner />}
-        <div className={loading ? 'opacity-50 pointer-events-none' : ''}>
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gamer Tag</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Points</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {players.map((player, index) => (
-                  <motion.tr
-                    key={player.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`px-6 py-4 whitespace-nowrap ${
-                      index < 3 ? 'bg-gradient-to-r from-yellow-100 to-yellow-50' : ''
-                    }`}
-                  >
-                    <td className="text-sm font-medium text-gray-900">
-                      <div className="flex items-center gap-2">
-                        {index < 3 && (
-                          <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
-                        )}
-                        {index + 1}
-                      </div>
-                    </td>
-                    <td className="text-sm text-gray-500">{player.username}</td>
-                    <td className="text-sm text-gray-500">{player.points}</td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
+    <section ref={containerRef} className="py-12 px-6 sm:px-12 md:px-24 relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
+      <div className="max-w-6xl mx-auto relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-80 flex flex-col items-center justify-center z-50">
+            <p className="text-gray-600 dark:text-gray-300 mb-4 font-semibold text-lg">
+              We are loading Leaderboard...
+            </p>
+            <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
           </div>
-        </div>
+        )}
+        {!loading && error && (
+          <div className="text-center text-red-600 dark:text-red-400 p-4" data-testid="error-message">
+            Error loading leaderboard: {error}
+          </div>
+        )}
+        {!loading && !error && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-4">
+                Tournament Leaderboard
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                Check out the top performers in the tournament
+              </p>
+            </motion.div>
+            <div className="leaderboard-container">
+              <AnimatePresence>
+                {players.length > 0 && (
+                  <>
+                    <Podium players={players} />
+                    <motion.div
+                      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 overflow-hidden"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
+                        Full Leaderboard
+                      </h3>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                          <thead className="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Rank
+                              </th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Player
+                              </th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Points
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody
+                            className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+                          >
+                            {players.map((player, index) => (
+                              <tr
+                                key={player.id}
+                                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                              >
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                  #{index + 1}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                  {player.username}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 font-medium">
+                                  <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                    {player.points} pts
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
 };
 
+const Podium: React.FC<{ players: Player[] }> = ({ players }) => {
+  const top3 = players.slice(0, 3);
+  const positions = [1, 0, 2];
+
+  return (
+    <div className="grid grid-cols-3 gap-4 mb-12 h-64">
+      {positions.map((pos, index) => {
+        const player = top3[pos];
+        if (!player) return null;
+
+        const height = ["h-48", "h-64", "h-36"][pos];
+        const colors = [
+          "from-yellow-400 to-yellow-200",
+          "from-gray-300 to-gray-100",
+          "from-amber-600 to-amber-400"
+        ][pos];
+
+        return (
+          <motion.div
+            key={player.id}
+            className={`flex flex-col items-center justify-end ${height} ${index === 1 ? 'order-first' : ''}`}
+            initial={{ y: 100, opacity: 0 }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              transition: {
+                type: 'spring',
+                stiffness: 50,
+                delay: index * 0.2
+              }
+            }}
+          >
+            <div className={`w-full bg-gradient-to-b ${colors} rounded-t-lg shadow-lg p-4 text-center`}>
+              <div className="text-2xl font-bold text-gray-900">{player.username}</div>
+              <div className="text-lg font-semibold text-gray-800">{player.points} pts</div>
+            </div>
+            <div className="w-full bg-gray-800 text-white text-center py-2 rounded-b-lg">
+              #{pos + 1}
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
 export default Leaderboard;
+

@@ -34,7 +34,7 @@ describe('FAQ', () => {
     expect(questions.length).toBeGreaterThanOrEqual(3);
 
     // Initially, answer should be hidden (opacity 0)
-    const answer = screen.getByText((content) => content.includes('You can register'));
+    const answer = screen.getByText((content) => content.toLowerCase().includes('you can register'));
     expect(answer).toHaveStyle('opacity: 0');
 
     // Click first question to open answer
