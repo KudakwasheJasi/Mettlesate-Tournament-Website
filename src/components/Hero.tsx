@@ -16,13 +16,20 @@ import { motion } from 'framer-motion';
 
 const Hero: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) => {
   return (
-    <section className="relative h-screen flex flex-col justify-center items-center text-white px-4 text-center overflow-hidden">
+    <section className="relative min-h-[75vh] flex flex-col justify-center items-center text-white px-4 text-center py-20">
+      <div className="absolute top-6 left-6 z-30 transition-transform duration-300 hover:scale-105">
+        <img 
+          src="/Mettlestate-logo.png" 
+          alt="MettleSate Logo" 
+          className="h-20 w-auto drop-shadow-lg"
+        />
+      </div>
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover"
+        className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
       >
         <source src="/istockphoto-484131978-640_adpp_is.mp4" type="video/mp4" />
         Your browser does not support the video tag.
@@ -31,11 +38,11 @@ const Hero: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) =>
         className="absolute top-0 left-0 w-full h-full z-10"
         style={{
           backgroundImage:
-            'linear-gradient(to top, rgba(0,0,0,0.8), transparent 30%), ' +
-            'linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 30%), ' +
-            'linear-gradient(to left, rgba(0,0,0,0.8), transparent 30%), ' +
-            'linear-gradient(to right, rgba(0,0,0,0.8), transparent 30%), ' +
-            'radial-gradient(circle, rgba(0,0,0,0.8) 0%, transparent 70%)',
+            'linear-gradient(to top, rgba(0,0,0,0.7), transparent 40%), ' +
+            'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 40%), ' +
+            'linear-gradient(to left, rgba(0,0,0,0.6), transparent 40%), ' +
+            'linear-gradient(to right, rgba(0,0,0,0.6), transparent 40%), ' +
+            'radial-gradient(circle, rgba(0,0,0,0.6) 0%, transparent 80%)',
           backgroundRepeat: 'no-repeat, no-repeat, no-repeat, no-repeat, no-repeat',
           backgroundPosition: 'top, bottom, left, right, center',
           backgroundSize: '100% 20px, 100% 20px, 20px 100%, 100% 100%, 100% 100%',
