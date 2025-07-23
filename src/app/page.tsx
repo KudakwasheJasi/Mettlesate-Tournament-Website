@@ -17,7 +17,12 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Hero from "@/components/Hero";
+import Hero from "../components/Hero";
+import EventDetails from "../components/EventDetails";
+import { RegistrationForm } from "../components/RegistrationForm";
+import Leaderboard from "../components/Leaderboard";
+import FAQ from "../components/FAQ";
+import Footer from "../components/Footer";
 
 const LoadingDots: React.FC = () => {
   return (
@@ -91,41 +96,22 @@ export default function Home() {
   return (
     <>
       {!showRegister && <Hero onRegisterClick={handleRegisterClick} />}
+      {!showRegister && <EventDetails />}
+      {!showRegister && <Leaderboard />}
+      {!showRegister && <FAQ />}
+      {!showRegister && <Footer />}
       {showRegister && (
-          <div
-            className="fixed inset-0 flex items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1920&q=80")' }}
-          >
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-              {/* Removed the Register heading text as requested */}
-              <form className="space-y-4" noValidate>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input type="text" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input type="email" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Password</label>
-                  <input type="password" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Register
-                </button>
-              </form>
-              <button
-                onClick={handleCloseModal}
-                className="mt-4 text-indigo-600 hover:text-indigo-500"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+        <RegistrationForm
+          onClose={handleCloseModal}
+          onSubmit={(data) => {
+            // Handle form submission here
+            console.log('Registration data:', data);
+            // Simulate API call or other submission logic
+            setTimeout(() => {
+              handleCloseModal();
+            }, 1000); // Simulate async operation
+          }}
+        />
       )}
     </>
   );
