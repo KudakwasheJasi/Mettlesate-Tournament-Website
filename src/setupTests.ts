@@ -1,15 +1,13 @@
 import '@testing-library/jest-dom';
 import { vi, expect } from 'vitest';
-import React from 'react';
+import * as React from 'react';
 
 // Mock external modules
-vi.mock('next/image', () => {
-  const React = require('react');
-  return {
-    __esModule: true,
-    default: ({ src, alt, ...props }: any) => React.createElement('img', { src, alt, ...props })
-  };
-});
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: ({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => 
+    React.createElement('img', { src, alt, ...props })
+}));
 
 // Mock API for leaderboard
 vi.mock('@/lib/api', () => ({

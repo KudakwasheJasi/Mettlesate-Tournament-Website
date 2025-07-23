@@ -16,7 +16,6 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Hero from "../components/Hero";
 import EventDetails from "../components/EventDetails";
 import { RegistrationForm } from "../components/RegistrationForm";

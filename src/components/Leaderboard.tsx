@@ -36,7 +36,7 @@ const Leaderboard: React.FC = () => {
         };
 
         // Map API data to Player type with random points
-        const mappedPlayers: Player[] = data.slice(0, 10).map((user: User, index: number) => ({
+        const mappedPlayers: Player[] = data.slice(0, 10).map((user: User) => ({
           id: user.id,
           username: user.username,
           points: Math.floor(Math.random() * 1000) + 500, // random points between 500 and 1500

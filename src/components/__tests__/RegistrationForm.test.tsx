@@ -31,7 +31,8 @@ describe('RegistrationForm', () => {
     const gamerTagInput = screen.getByLabelText(/Gamer Tag/i);
     const emailInput = screen.getByLabelText(/Email/i);
     const favouriteGameInput = screen.getByLabelText(/Favourite Game Title/i);
-    const submitButton = screen.getByRole('button', { name: /Register/i });
+    // Submit button is not used in this test
+    screen.getByRole('button', { name: /Register/i });
 
     // Fill out form fields
     fireEvent.change(fullNameInput, { target: { value: 'John Doe' } });
