@@ -1,3 +1,15 @@
+/**
+    * @description      : 
+    * @author           : kudakwashe Ellijah
+    * @group            : 
+    * @created          : 23/07/2025 - 21:44:11
+    * 
+    * MODIFICATION LOG
+    * - Version         : 1.0.0
+    * - Date            : 23/07/2025
+    * - Author          : kudakwashe Ellijah
+    * - Modification    : 
+**/
 import '@testing-library/jest-dom';
 import { vi, expect } from 'vitest';
 import * as React from 'react';
@@ -27,6 +39,57 @@ vi.mock('@/lib/api', () => ({
     ]
   })
 }));
+
+interface IntersectionObserverEntry {
+  readonly time: DOMHighResTimeStamp;
+  readonly rootBounds: DOMRectReadOnly | null;
+  readonly boundingClientRect: DOMRectReadOnly;
+  readonly intersectionRect: DOMRectReadOnly;
+  readonly isIntersecting: boolean;
+  readonly intersectionRatio: number;
+}
+
+interface IntersectionObserverInit {
+  root?: Element | Document | null;
+  rootMargin?: string;
+  threshold?: number | number[];
+}
+
+class MockIntersectionObserver {
+  root: Element | Document | null = null;
+  rootMargin: string = '';
+  thresholds: number[] = [];
+
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+    this.root = options?.root || null;
+    this.rootMargin = options?.rootMargin || '';
+    if (Array.isArray(options?.threshold)) {
+      this.thresholds = options!.threshold!;
+    } else if (typeof options?.threshold === 'number') {
+      this.thresholds = [options!.threshold!];
+    } else {
+      this.thresholds = [];
+    }
+  }
+
+  observe(target: Element): void {
+    // no-op
+  }
+
+  unobserve(target: Element): void {
+    // no-op
+  }
+
+  disconnect(): void {
+    // no-op
+  }
+
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+}
+
+window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 // Add any global matchers or utilities
 expect.extend({
