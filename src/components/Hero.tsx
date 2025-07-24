@@ -5,10 +5,10 @@
     * @created          : 22/07/2025 - 13:11:22
     * 
     * MODIFICATION LOG
-    * - Version         : 1.1.0
-    * - Date            : 28/07/2025
+    * - Version         : 1.2.1
+    * - Date            : 29/07/2025
     * - Author          : kudakwashe Ellijah
-    * - Modification    : Added alternating video playback in Hero component
+    * - Modification    : Further reduced text size for iPhone SE in Hero component
 **/
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -30,13 +30,13 @@ const Hero: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) =>
   }, [videos.length]);
 
   return (
-    <section className="relative min-h-[75vh] flex flex-col justify-center items-center text-white px-4 text-center py-20">
+    <section className="relative min-h-[70vh] flex flex-col justify-center items-center text-white px-4 text-center py-16 sm:py-16 sm:px-6 xs:py-12">
       <div className="absolute top-6 left-6 z-30 transition-transform duration-300 hover:scale-105">
         <Image 
           src="/Mettlestate-logo.png" 
           alt="MettleSate Logo" 
-          width={80}
-          height={80}
+          width={60}
+          height={60}
           className="drop-shadow-lg"
         />
       </div>
@@ -66,13 +66,13 @@ const Hero: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) =>
         }}
       ></div>
       <motion.div
-        className="relative p-8 rounded-lg max-w-3xl z-20"
+        className="relative p-6 rounded-lg max-w-3xl z-20"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         <motion.h1
-          className="text-5xl font-extrabold mb-4"
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-5xl font-extrabold mb-2 xs:mb-3"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
@@ -80,16 +80,16 @@ const Hero: React.FC<{ onRegisterClick: () => void }> = ({ onRegisterClick }) =>
           Legends of Victory: Battle Royale Cup
         </motion.h1>
         <motion.p
-          className="text-xl mb-8"
+          className="text-base xs:text-lg sm:text-xl md:text-xl mb-4 xs:mb-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
+          transition={{ delay: 1, duration: 0.5 }}
         >
           Compete for glory. Only one can win.
         </motion.p>
         <motion.button
           onClick={onRegisterClick}
-          className="bg-red-600 hover:bg-red-700 transition rounded-md px-6 py-3 text-lg font-semibold"
+          className="bg-red-600 hover:bg-red-700 transition rounded-md px-5 py-2 text-sm xs:text-base font-semibold"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0 }}
