@@ -82,7 +82,7 @@ const Hero: React.FC = () => {
             className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.3}}
           >
             Legends of Victory: Battle Royale Cup
           </motion.h1>
@@ -90,7 +90,7 @@ const Hero: React.FC = () => {
             className="text-sm xs:text-base sm:text-lg md:text-xl mb-6 sm:mb-8 md:mb-10 text-gray-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
+            transition={{ delay: 1, duration: 1}}
           >
             Compete for glory. Only one can win.
           </motion.p>
