@@ -15,55 +15,29 @@
 
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Hero from "../components/Hero";
 import EventDetails from "../components/EventDetails";
-import { RegistrationForm } from "../components/RegistrationForm";
+import RegistrationForm from "../components/RegistrationForm";
 import Leaderboard from "../components/Leaderboard";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 
-const LoadingDots: React.FC = () => {
-  return (
-    <div className="relative flex justify-center items-center h-40 w-40">
-      <div className="flex space-x-2 justify-center items-center relative z-10">
-        {[...Array(4)].map((_, i) => (
-          <span
-            key={i}
-            className="inline-block w-4 h-4 bg-red-600 rounded-full animate-wave"
-            style={{ animationDelay: `${i * 0.3}s` }}
-          />
-        ))}
-      </div>
-      <style jsx>{`
-        @keyframes wave {
-          0%, 60%, 100% {
-            transform: translateY(0);
-          }
-          30% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-wave {
-          animation: wave 1.2s infinite;
-        }
-      `}</style>
-    </div>
-  );
-};
+/* Removed unused LoadingDots component to fix eslint warning */
 
 export default function Home() {
   const [showRegister, setShowRegister] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showLoadingDots, setShowLoadingDots] = useState(false);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [leaderboardMounted, setLeaderboardMounted] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  const handleRegisterClick = () => {
-    setShowLoadingDots(true);
-    setTimeout(() => {
-      setShowLoadingDots(false);
-      setShowRegister(true);
-    }, 2000); // 2 seconds loading animation
-  };
+  const handleLeaderboardLoadingChange = useCallback((loading: boolean) => {
+    console.log('Leaderboard loading state:', loading);
+    setLeaderboardLoading(loading);
+  }, []);
+
+  // Removed unused handleRegisterClick function to fix eslint warning
 
   const handleCloseModal = () => {
     setShowRegister(false);
@@ -71,8 +45,17 @@ export default function Home() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      // First, complete the main app loading
       setLoading(false);
-    }, 1500); // simulate loading delay
+      
+      // Then, after a small delay, allow the Leaderboard to start loading
+      const leaderboardTimer = setTimeout(() => {
+        setInitialLoad(false);
+      }, 5000);
+      
+      return () => clearTimeout(leaderboardTimer);
+    }, 1500); // Initial app loading delay
+    
     return () => clearTimeout(timer);
   }, []);
 
@@ -84,21 +67,41 @@ export default function Home() {
     );
   }
 
-  if (showLoadingDots) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <LoadingDots />
-      </div>
-    );
-  }
-
   return (
     <>
-      {!showRegister && <Hero onRegisterClick={handleRegisterClick} />}
-      {!showRegister && <EventDetails />}
-      {!showRegister && <Leaderboard />}
-      {!showRegister && <FAQ />}
-      {!showRegister && <Footer />}
+      {!showRegister && (
+        <>
+          <Hero />
+          <EventDetails />
+          <div className="relative min-h-[50vh]">
+            {initialLoad ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                <p className="text-gray-700 dark:text-gray-300 text-lg font-medium">
+                  Loading tournament data...
+                </p>
+              </div>
+            ) : (
+              <>
+                {leaderboardLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-10">
+                    <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p className="text-gray-700 dark:text-gray-300 text-lg font-medium">
+                      Loading leaderboard data...
+                    </p>
+                  </div>
+                )}
+                <Leaderboard 
+                  onLoadingChange={handleLeaderboardLoadingChange} 
+                  key={String(leaderboardMounted)}
+                />
+              </>
+            )}
+          </div>
+          <FAQ />
+          <Footer />
+        </>
+      )}
       {showRegister && (
         <RegistrationForm
           onClose={handleCloseModal}
