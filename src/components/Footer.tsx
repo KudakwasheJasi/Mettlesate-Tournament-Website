@@ -5,10 +5,10 @@
     * @created          : 22/07/2025 - 23:49:35
     * 
     * MODIFICATION LOG
-    * - Version         : 1.2.0
-    * - Date            : 27/07/2025
+    * - Version         : 1.3.0
+    * - Date            : 30/07/2025
     * - Author          : kudakwashe Ellijah
-    * - Modification    : Replaced <img> with Next.js <Image> for Twitter logo to optimize performance
+    * - Modification    : Removed background black filter from logo in Footer component
 **/
 import React from 'react';
 import Image from 'next/image';
@@ -60,17 +60,16 @@ const Footer: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <motion.div 
-          className="flex items-center gap-3"
+          className="flex items-center"
           variants={iconVariants}
         >
           <Image
-            src="/Mettlestate-logo.png"
+            src="/Mettlesate-logo.PNG"
             alt="Mettlestate Logo"
-            width={40}
-            height={40}
-            className="rounded-full filter brightness-0 invert"
+            width={200}
+            height={200}
+            className="rounded-full"
           />
-          <span className="text-xl font-semibold">Mettlestate</span>
         </motion.div>
         <motion.div 
           className="flex gap-6"
