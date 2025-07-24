@@ -27,7 +27,7 @@ const Hero: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
-    }, 10000); // Switch video every 10 seconds
+    }, 5000); // Switch video every 10 seconds
 
     return () => clearInterval(interval);
   }, [videos.length]);
