@@ -110,7 +110,7 @@ const Leaderboard: React.FC = () => {
 
   return (
     <section ref={containerRef} className="py-6 sm:py-8 md:py-12 px-3 sm:px-6 md:px-12 relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
-      <div className="max-w-6xl mx-auto relative">
+      <div className="max-w-6xl mx-auto relative pb-16">
         {loading && (
           <div className="absolute inset-0 bg-white bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-80 flex flex-col items-center justify-center z-50">
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 font-medium sm:font-semibold text-center px-4">
@@ -133,9 +133,9 @@ const Leaderboard: React.FC = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center mb-6 sm:mb-8 md:mb-12 px-2"
+              className="text-center mb-4 sm:mb-6 md:mb-8 px-2"
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-2 sm:mb-3 md:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-2 sm:mb-3 md:mb-4">
                 Tournament Leaderboard
               </h2>
               <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-md mx-auto">
@@ -148,7 +148,7 @@ const Leaderboard: React.FC = () => {
                   <>
                     <Podium players={players} className="mb-6 sm:mb-8 md:mb-10" />
                     <motion.div
-                      className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg p-3 sm:p-4 md:p-6 mt-6"
+                      className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg p-3 sm:p-4 md:p-6 mt-6 mb-8"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
@@ -172,14 +172,14 @@ const Leaderboard: React.FC = () => {
                                 </th>
                               </tr>
                             </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 text-xs sm:text-sm">
+                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 text-[10px] xs:text-xs sm:text-sm">
                               {players.map((player, index) => (
                                 <tr
                                   key={player.id}
                                   className="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-200"
                                 >
                                   <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                    <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-xs sm:text-sm">
+                                    <span className="inline-flex items-center justify-center w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-[10px] xs:text-xs sm:text-sm">
                                       {index + 1}
                                     </span>
                                   </td>
@@ -187,7 +187,7 @@ const Leaderboard: React.FC = () => {
                                     {player.username}
                                   </td>
                                   <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap">
-                                    <span className="px-2 py-1 inline-flex text-[10px] xs:text-xs leading-4 sm:leading-5 font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                    <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 inline-flex text-[9px] xs:text-xs leading-4 sm:leading-5 font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                       {player.points.toLocaleString()} pts
                                     </span>
                                   </td>
@@ -214,16 +214,16 @@ const Podium: React.FC<{ players: Player[], className?: string }> = ({ players, 
   const positions = [1, 0, 2]; // 2nd, 1st, 3rd place
 
   return (
-    <div className={`grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 h-40 sm:h-52 md:h-64 px-1 sm:px-2 mb-6 -mt-6 ${className}`}>
+    <div className={`grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 h-36 sm:h-44 md:h-56 lg:h-60 xl:h-64 px-1 sm:px-2 mb-6 mt-4 sm:mt-6 ${className}`}>
       {positions.map((pos, index) => {
         const player = top3[pos];
         if (!player) return null;
 
-        // Responsive heights
+        // Responsive heights - reduced for larger screens
         const height = [
-          "h-28 sm:h-36 md:h-48 lg:h-52 xl:h-56", // 2nd place
-          "h-36 sm:h-48 md:h-64 lg:h-72 xl:h-80",  // 1st place
-          "h-24 sm:h-32 md:h-40 lg:h-44 xl:h-48"   // 3rd place
+          "h-24 sm:h-32 md:h-40 lg:h-44 xl:h-48",  // 2nd place
+          "h-32 sm:h-40 md:h-52 lg:h-56 xl:h-60",  // 1st place
+          "h-20 sm:h-28 md:h-36 lg:h-40 xl:h-44"   // 3rd place
         ][pos];
 
         const colors = [
@@ -257,10 +257,10 @@ const Podium: React.FC<{ players: Player[], className?: string }> = ({ players, 
             <div 
               className={`w-full bg-gradient-to-b ${colors} rounded-t-lg shadow-md sm:shadow-lg p-2 sm:p-3 md:p-4 text-center`}
             >
-              <div className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 truncate px-1">
+              <div className="text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg font-bold text-gray-900 truncate px-1">
                 {displayName}
               </div>
-              <div className="text-xs sm:text-sm md:text-base font-semibold text-gray-800 mt-1">
+              <div className="text-xs sm:text-xs md:text-sm font-semibold text-gray-800 mt-1">
                 {player.points.toLocaleString()} pts
               </div>
             </div>
