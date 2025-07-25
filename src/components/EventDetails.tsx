@@ -13,25 +13,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 
-// Gradient colors for the brilliant effect
-const gradientColors = [
-  '#ff0000', '#ff7f00', '#ffff00', '#00ff00',
-  '#0000ff', '#4b0082', '#9400d3', '#ff1493'
-];
-
-// Animation configuration for the border
-const borderAnimation = {
-  initial: { rotate: 0 },
-  animate: { 
-    rotate: 360,
-    transition: {
-      duration: 20,
-      repeat: Infinity,
-      ease: 'linear',
-    },
-  },
-};
-
 const EventDetails: React.FC = () => {
   const [moneyParticles, setMoneyParticles] = useState<{id: number; x: number; y: number; rotate: number}[]>([]);
   
@@ -207,49 +188,11 @@ const EventDetails: React.FC = () => {
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
       
-      {/* Animated border effect at container edge */}
-      <motion.div 
-        className="absolute inset-0"
-        style={{
-          zIndex: 5,
-          padding: '2px',
-          background: 'linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff1493, #ff0000)',
-          backgroundSize: '400% 100%',
-        }}
-        animate={{
-          backgroundPosition: ['0% 0%', '200% 0%']
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: 'linear'
-        }}
-      >
-        <div className="w-full h-full bg-gray-900/95 backdrop-blur-sm">
-          {/* Content will go here */}
-        </div>
-      </motion.div>
+      <div className="absolute inset-0 bg-gray-900/95 backdrop-blur-sm">
+        {/* Content container */}
+      </div>
       
-      {/* Glow effect */}
-      <motion.div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 6,
-          boxShadow: '0 0 40px 10px rgba(59, 130, 246, 0.4)'
-        }}
-        animate={{
-          boxShadow: [
-            '0 0 40px 10px rgba(59, 130, 246, 0.4)',
-            '0 0 60px 15px rgba(124, 58, 237, 0.5)',
-            '0 0 40px 10px rgba(59, 130, 246, 0.4)'
-          ]
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
+
       
       {/* Content container */}
       <div className="w-full max-w-5xl mx-auto relative z-10 p-8">

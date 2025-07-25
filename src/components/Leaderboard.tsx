@@ -12,11 +12,15 @@
 **/
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, useInView, useAnimation, AnimatePresence } from 'framer-motion';
+import Podium from './Podium';
 
 interface Player {
   id: number;
   username: string;
+  name: string;
   points: number;
+  email?: string;
+  company: string;
 }
 
 interface LeaderboardProps {
@@ -79,24 +83,21 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ onLoadingChange }): React.Rea
 
         if (!isMounted) return;
 
-        // Process the data
-        const requiredPlayers = 10;
-        const availablePlayers = data.length;
+              // Process the data - take first 10 users and assign points
+        const mappedPlayers: Player[] = data.slice(0, 10).map((user: any, index: number) => ({
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          points: 1500 - (index * 150), // Higher points for better differentiation
+          email: user.email,
+          company: user.company.name
+        }));
 
-        const mappedPlayers: Player[] = Array(requiredPlayers).fill(null).map((_, index) => {
-          const user = data[index % availablePlayers];
-          const username = index >= availablePlayers
-            ? `${user.username}_${Math.floor(index / availablePlayers) + 1}`
-            : user.username;
-
-          return {
-            id: index + 1,
-            username,
-            points: Math.floor(Math.random() * 1000) + 500,
-          };
-        });
-
+        // Sort by points in descending order
         const sortedPlayers = mappedPlayers.sort((a, b) => b.points - a.points);
+        
+        // Log the top 3 players for debugging
+        console.log('Top 3 players:', sortedPlayers.slice(0, 3));
         
         if (!isMounted) return;
         
@@ -187,138 +188,80 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ onLoadingChange }): React.Rea
                 Check out the top performers in the tournament
               </p>
             </motion.div>
-            <div className="leaderboard-container px-1 sm:px-0">
-              <AnimatePresence>
-        {players.length > 0 && (
-          <>
-            <Podium players={players} className="mb-6 sm:mb-8 md:mb-10" />
-            <motion.div
-              className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg p-3 sm:p-4 md:p-6 mt-6 mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-3 sm:mb-4 md:mb-6">
-                Full Leaderboard
-              </h3>
-              <div className="overflow-x-auto -mx-1 sm:mx-0">
-                <div className="inline-block min-w-full align-middle">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th scope="col" className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 text-left text-[10px] xs:text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Rank
-                        </th>
-                        <th scope="col" className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 text-left text-[10px] xs:text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Player
-                        </th>
-                        <th scope="col" className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 text-left text-[10px] xs:text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                          Points
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 text-[10px] xs:text-xs sm:text-sm">
-                      {players.map((player, index) => {
-                        const uniqueKey = player.id + '-' + index;
-                        return (
-                          <tr
-                            key={uniqueKey}
-                            className="hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors duration-200"
-                          >
-                            <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                              <span className="inline-flex items-center justify-center w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-[10px] xs:text-xs sm:text-sm">
-                                {index + 1}
-                              </span>
-                            </td>
-                            <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap text-gray-700 dark:text-gray-300 truncate max-w-[100px] sm:max-w-[200px] md:max-w-none">
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+              <Podium players={players} className="mb-8 sm:mb-12" />
+              
+              <motion.div 
+                className="overflow-x-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Rank
+                      </th>
+                      <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Player
+                      </th>
+                      <th scope="col" className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Points
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {players.map((player, index) => (
+                      <tr
+                        key={player.id}
+                        className={`transition-colors duration-200 ${
+                          index < 3 
+                            ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20' 
+                            : 'hover:bg-blue-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap font-medium">
+                          <span className={`inline-flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full ${
+                            index === 0 ? 'bg-yellow-400 text-yellow-900' : 
+                            index === 1 ? 'bg-gray-300 text-gray-800' : 
+                            index === 2 ? 'bg-amber-600 text-white' : 
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white'
+                          } font-bold text-xs sm:text-sm`}>
+                            {index + 1}
+                          </span>
+                        </td>
+                        <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-900 dark:text-white">
                               {player.username}
-                            </td>
-                            <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap">
-                              <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 inline-flex text-[9px] xs:text-xs leading-4 sm:leading-5 font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                {player.points.toLocaleString()} pts
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-              </AnimatePresence>
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px] sm:max-w-[200px] md:max-w-none">
+                              {player.company}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-2 sm:px-3 md:px-6 py-2 sm:py-3 whitespace-nowrap">
+                          <span className={`px-2 py-1 inline-flex text-xs xs:text-sm leading-4 sm:leading-5 font-semibold rounded-full ${
+                            index === 0 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200' :
+                            index === 1 ? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200' :
+                            index === 2 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200' :
+                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          }`}>
+                            {player.points.toLocaleString()} pts
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </motion.div>
             </div>
           </>
         )}
       </div>
     </section>
-  );
-};
-
-const Podium: React.FC<{ players: Player[], className?: string }> = ({ players, className = '' }) => {
-  const top3 = players.slice(0, 3);
-  const positions = [1, 0, 2]; // 2nd, 1st, 3rd place
-
-  return (
-    <div className={`grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 h-36 sm:h-44 md:h-56 lg:h-60 xl:h-64 px-1 sm:px-2 mb-6 mt-4 sm:mt-6 ${className}`}>
-      {positions.map((pos, index) => {
-        const player = top3[pos];
-        if (!player) return null;
-
-        // Responsive heights - reduced for larger screens
-        const height = [
-          "h-24 sm:h-32 md:h-40 lg:h-44 xl:h-48",  // 2nd place
-          "h-32 sm:h-40 md:h-52 lg:h-56 xl:h-60",  // 1st place
-          "h-20 sm:h-28 md:h-36 lg:h-40 xl:h-44"   // 3rd place
-        ][pos];
-
-        const colors = [
-          "from-yellow-400 to-yellow-200",  // 2nd place
-          "from-yellow-500 to-yellow-300",  // 1st place (more vibrant)
-          "from-amber-600 to-amber-400"     // 3rd place
-        ][pos];
-
-        // Truncate long usernames
-        const displayName = player.username.length > 10 
-          ? `${player.username.substring(0, 8)}...` 
-          : player.username;
-
-        return (
-          <motion.div
-            key={player.id}
-            className={`flex flex-col items-center justify-end ${height} ${
-              index === 1 ? 'order-first' : ''
-            }`}
-            initial={{ y: 100, opacity: 0 }}
-            animate={{
-              y: 0,
-              opacity: 1,
-              transition: {
-                type: 'spring',
-                stiffness: 50,
-                delay: index * 0.2
-              }
-            }}
-          >
-            <div 
-              className={`w-full bg-gradient-to-b ${colors} rounded-t-lg shadow-md sm:shadow-lg p-2 sm:p-3 md:p-4 text-center`}
-            >
-              <div className="text-xs xs:text-sm sm:text-sm md:text-base lg:text-lg font-bold text-gray-900 truncate px-1">
-                {displayName}
-              </div>
-              <div className="text-xs sm:text-xs md:text-sm font-semibold text-gray-800 mt-1">
-                {player.points.toLocaleString()} pts
-              </div>
-            </div>
-            <div className="w-full bg-gray-800 text-white text-center py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-b-lg">
-              #{pos + 1}
-            </div>
-          </motion.div>
-        );
-      })}
-    </div>
   );
 };
 

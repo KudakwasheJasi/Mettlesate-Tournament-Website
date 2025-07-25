@@ -72,7 +72,6 @@ const FAQ: React.FC = () => {
                 <motion.div
                   key="content"
                   id={`faq-panel-${index}`}
-                  role="region"
                   aria-labelledby={`faq-header-${index}`}
                   initial="collapsed"
                   animate="open"
