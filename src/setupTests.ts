@@ -72,11 +72,13 @@ class MockIntersectionObserver {
     }
   }
 
-  observe(target: Element): void {
+  observe(_target: Element): void {
+    void _target;
     // no-op
   }
 
-  unobserve(target: Element): void {
+  unobserve(_target: Element): void {
+    void _target;
     // no-op
   }
 

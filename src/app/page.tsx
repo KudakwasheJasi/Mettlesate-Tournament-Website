@@ -29,7 +29,7 @@ export default function Home() {
   const [showRegister, setShowRegister] = useState(false);
   const [loading, setLoading] = useState(true);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
-  const [leaderboardMounted, setLeaderboardMounted] = useState(false);
+  const [leaderboardMounted] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
   const handleLeaderboardLoadingChange = useCallback((loading: boolean) => {

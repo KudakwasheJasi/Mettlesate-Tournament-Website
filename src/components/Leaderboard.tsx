@@ -11,7 +11,7 @@
     * - Modification    : Ensure loading UI overlay is clearly visible after app page loading
 **/
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, useInView, useAnimation, AnimatePresence } from 'framer-motion';
+import { motion, useInView, useAnimation } from 'framer-motion';
 import Podium from './Podium';
 
 interface Player {
@@ -21,6 +21,16 @@ interface Player {
   points: number;
   email?: string;
   company: string;
+}
+
+interface User {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  company: {
+    name: string;
+  };
 }
 
 interface LeaderboardProps {
@@ -78,13 +88,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ onLoadingChange }): React.Rea
         const response = await fetch('https://jsonplaceholder.typicode.com/users');
         if (!response.ok) throw new Error('Failed to fetch');
         
-        const data = await response.json();
+        const data: User[] = await response.json();
         console.log('API response received:', data);
 
         if (!isMounted) return;
 
               // Process the data - take first 10 users and assign points
-        const mappedPlayers: Player[] = data.slice(0, 10).map((user: any, index: number) => ({
+        const mappedPlayers: Player[] = data.slice(0, 10).map((user: User, index: number) => ({
           id: user.id,
           username: user.username,
           name: user.name,
