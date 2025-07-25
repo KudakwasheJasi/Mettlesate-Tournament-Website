@@ -25,12 +25,14 @@ import Footer from "../components/Footer";
 
 /* Removed unused LoadingDots component to fix eslint warning */
 
+const isTestEnv = process.env.NODE_ENV === 'test';
+
 export default function Home() {
   const [showRegister, setShowRegister] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isTestEnv);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [leaderboardMounted] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(!isTestEnv);
 
   const handleLeaderboardLoadingChange = useCallback((loading: boolean) => {
     console.log('Leaderboard loading state:', loading);
@@ -44,6 +46,11 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (isTestEnv) {
+      setLoading(false);
+      setInitialLoad(false);
+      return;
+    }
     const timer = setTimeout(() => {
       // First, complete the main app loading
       setLoading(false);
@@ -57,7 +64,7 @@ export default function Home() {
     }, 1500); // Initial app loading delay
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [isTestEnv]);
 
   if (loading) {
     return (

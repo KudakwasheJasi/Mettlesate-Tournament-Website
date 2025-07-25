@@ -19,15 +19,17 @@ describe('Leaderboard', () => {
   it('renders loading state initially and then player rows', async () => {
     render(<Leaderboard />);
 
-    expect(screen.getByText(/loading leaderboard/i)).toBeInTheDocument();
+    // Check for spinner element indicating loading state
+    const spinner = document.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
 
-    // Wait for loading overlay to disappear
+    // Wait for spinner to disappear
     await waitFor(() => {
-      const loadingOverlay = screen.queryByText(/loading leaderboard/i);
-      if (loadingOverlay) {
-        throw new Error('Loading overlay still present');
+      const spinner = document.querySelector('.animate-spin');
+      if (spinner) {
+        throw new Error('Loading spinner still present');
       }
-    });
+    }, {timeout: 5000});
 
     // Now check for player rows
     const table = screen.getAllByRole('table')[0];

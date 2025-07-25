@@ -92,7 +92,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onClose, onSubmit, 
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(internalSubmit)} className="flex flex-col gap-y-5">
+      <form role="form" onSubmit={handleSubmit(internalSubmit)} className="flex flex-col gap-y-5">
         <div>
           <input
             type="text"
