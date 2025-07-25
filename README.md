@@ -61,6 +61,10 @@ yarn dev
 - Fill in your details and submit the form.
 - Use the Cancel button to close the modal.
 
+## Demo
+
+- Watch the demo video here: [https://www.loom.com/share/ddbbc4ec7a584c048a08a3a235ec75d9?sid=0a8cb48e-5f98-483b-a187-72bd5057276d](https://www.loom.com/share/ddbbc4ec7a584c048a08a3a235ec75d9?sid=0a8cb48e-5f98-483b-a187-72bd5057276d)
+
 ## License
 
 This project is licensed under the MIT License.

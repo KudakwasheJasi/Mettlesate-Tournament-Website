@@ -16,8 +16,10 @@ import { motion, AnimatePresence, useAnimation, Variants } from 'framer-motion';
 const EventDetails: React.FC = () => {
   const [moneyParticles, setMoneyParticles] = useState<{id: number; x: number; y: number; rotate: number}[]>([]);
   
-  // Generate money particles for the prize bag
+  // Generate money particles for the prize bag only on client side
   useEffect(() => {
+    if (typeof window === 'undefined') return; // Skip on server
+
     const interval = setInterval(() => {
       setMoneyParticles(prev => [
         ...prev.slice(-10), // Keep only last 10 particles
