@@ -23,7 +23,7 @@ This is a Next.js web application for the "Legends of Victory: Battle Royale Cup
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/KudakwasheJasi/Mettlesate-Tournament-Website
 ```
 
 2. Install dependencies:
@@ -43,6 +43,8 @@ yarn dev
 ```
 
 4. Open [http://localhost:3001](http://localhost:3001) in your browser to view the app.
+
+5. Visit the live deployment on Vercel: [https://vercel.com/kudakwashejasis-projects/mettlesate-tournament](https://vercel.com/kudakwashejasis-projects/mettlesate-tournament)
 
 ## Project Structure
 

@@ -64,7 +64,7 @@ export default function Home() {
     }, 1500); // Initial app loading delay
     
     return () => clearTimeout(timer);
-  }, [isTestEnv]);
+  }, []);
 
   if (loading) {
     return (
