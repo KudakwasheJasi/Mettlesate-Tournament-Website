@@ -23,7 +23,6 @@ import Leaderboard from "../components/Leaderboard";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 
-/* Removed unused LoadingDots component to fix eslint warning */
 
 const isTestEnv = process.env.NODE_ENV === 'test';
 
